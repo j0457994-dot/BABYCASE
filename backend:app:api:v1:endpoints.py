@@ -1,15 +1,18 @@
-from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException, status
+from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
-from ...database import get_db
-from ...models import schemas
-from ...tasks.worker import run_campaign, enrich_target_async
-from ...services.osint_service import OSINTService
-from ...services.analytics_service import AnalyticsService
-from ...core.rate_limiter import limiter
-from ...core.security import require_api_key, generate_api_key
+
+# CHANGE THESE - use absolute imports
+from app.database import get_db
+from app.models import schemas
+from app.tasks.worker import run_campaign, enrich_target_async
+from app.services.osint_service import OSINTService
+from app.services.analytics_service import AnalyticsService
+from app.core.rate_limiter import limiter
+from app.core.security import require_api_key, generate_api_key
+
 import logging
 
 router = APIRouter()

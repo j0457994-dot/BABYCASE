@@ -1,0 +1,94 @@
+services:
+  # PostgreSQL Database
+  - type: postgresql
+    name: omega-red-db
+    plan: free
+    ipAllowList: []
+
+  # Redis Database  
+  - type: redis
+    name: omega-red-redis
+    plan: free
+    ipAllowList: []
+    maxmemoryPolicy: noeviction
+
+  # FastAPI Backend
+  - type: web
+    name: omega-red-api
+    plan: free
+    runtime: python
+    repo: https://github.com/j0457994-dot/BABYCASE
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: omega-red-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: omega-red-redis
+          property: connectionString
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: HUNTER_API_KEY
+        sync: false
+      - key: CLEARBIT_API_KEY
+        sync: false
+      - key: SMTP_SERVER
+        value: smtp.sendgrid.net
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+  # Celery Worker (Background Tasks)
+  - type: worker
+    name: omega-red-worker
+    plan: free
+    runtime: python
+    repo: https://github.com/j0457994-dot/BABYCASE
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.tasks.worker.celery_app worker --loglevel=info
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: omega-red-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: omega-red-redis
+          property: connectionString
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: HUNTER_API_KEY
+        sync: false
+
+  # Celery Beat (Scheduler)
+  - type: worker
+    name: omega-red-beat
+    plan: free
+    runtime: python
+    repo: https://github.com/j0457994-dot/BABYCASE
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.tasks.worker.celery_app beat --loglevel=info
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: omega-red-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: omega-red-redis
+          property: connectionString

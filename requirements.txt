@@ -13,10 +13,8 @@ passlib[bcrypt]==1.7.4
 python-socketio==5.10.0
 aiofiles==23.2.1
 beautifulsoup4==4.12.2
-lxml==4.9.3
 prometheus-client==0.19.0
 slowapi==0.1.9
 tenacity==8.2.3
 jinja2==3.1.2
-celery-redbeat==2.2.0
 flower==2.0.1

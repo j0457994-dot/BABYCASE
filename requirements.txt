@@ -5,7 +5,7 @@ psycopg2-binary==2.9.9
 pydantic-settings==2.1.0
 celery==5.3.4
 redis==5.0.1
-httpx==0.25.1
+httpx==0.25.2
 aiosmtplib==3.0.1
 python-multipart==0.0.6
 python-jose[cryptography]==3.3.0
@@ -14,7 +14,6 @@ python-socketio==5.10.0
 aiofiles==23.2.1
 beautifulsoup4==4.12.2
 lxml==4.9.3
-python-telegram-bot==20.7
 prometheus-client==0.19.0
 slowapi==0.1.9
 tenacity==8.2.3

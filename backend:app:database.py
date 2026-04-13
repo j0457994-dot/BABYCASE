@@ -1,14 +1,13 @@
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import QueuePool
 from contextlib import contextmanager
-from .core.config import settings
+from app.core.config import settings  # CHANGE THIS - from .core.config to app.core.config
 import logging
 
 logger = logging.getLogger(__name__)
 
-# Harvard-Level: Connection pooling with retry logic
 engine = create_engine(
     settings.DATABASE_URL,
     poolclass=QueuePool,
@@ -24,7 +23,6 @@ Base = declarative_base()
 
 @contextmanager
 def get_db():
-    """Dependency injection with automatic retry on failure"""
     db = SessionLocal()
     try:
         yield db
@@ -36,8 +34,6 @@ def get_db():
     finally:
         db.close()
 
-# MIT Enhancement: Automatic table creation with migration check
 def init_db():
-    """Initialize database with all tables"""
     Base.metadata.create_all(bind=engine)
     logger.info("Database initialized successfully")
